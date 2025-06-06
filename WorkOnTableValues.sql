@@ -20,7 +20,6 @@ CREATE TABLE europe_year_long(
     `YoY % change` VARCHAR(50)
 );
 SHOW VARIABLES LIKE "secure_file_priv";
-DROP TABLE europe_year_long;
 -- вкарване на данните
 
 LOAD DATA INFILE 'europe_yearly_full_release_long_format.csv'
@@ -30,8 +29,6 @@ OPTIONALLY ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES;
 
-SELECT * FROM europe_year_long;
-
 -- Създаване на резервна работна таблица
 CREATE TABLE euyearl LIKE europe_year_long;
 INSERT INTO euyearl SELECT * FROM europe_year_long;
@@ -40,15 +37,13 @@ INSERT INTO euyearl SELECT * FROM europe_year_long;
 -- 1. Работа по колони Value, YoY % change, YoY absolute change
 -- Първа колона - Value
 
-select length(Value),Value from euyearl
+SELECT length(Value),Value from euyearl
 ORDER BY length(Value) DESC;
 
 ALTER TABLE euyearl
 MODIFY COLUMN Value decimal(8,3);
 
-select sum(Value) FROM euyearl;
--- Проверка на типовете на колоната
-
+-- Проверка типовете на колоните
 SELECT COLUMN_NAME, DATA_TYPE 
 FROM INFORMATION_SCHEMA.COLUMNS 
 WHERE TABLE_SCHEMA = 'bgelectricity'
@@ -140,7 +135,6 @@ WHERE `G7` = "1.0" ;
 UPDATE euyearl
 SET `G7` = "No" 
 WHERE `G7` = '0.0';
-
 
 UPDATE euyearl
 SET `ASEAN` = null 
